@@ -105,6 +105,26 @@ def rename_question_marks_recursive(obj):
     else:
         return obj
 
+
+def normalize_dynamic_dicts(obj, dynamic_dict_fields=['roles_users']):
+    """Convert dynamic key dictionaries to arrays for BigQuery compatibility"""
+    if isinstance(obj, dict):
+        new_dict = {}
+        for key, value in obj.items():
+            if key in dynamic_dict_fields and isinstance(value, dict):
+                # Convert {"uuid1": "uuid2", "uuid3": "uuid4"}
+                # to [{"key": "uuid1", "value": "uuid2"}, {"key": "uuid3", "value": "uuid4"}]
+                new_dict[key] = [{"key": k, "value": v} for k, v in value.items()]
+            else:
+                new_dict[key] = normalize_dynamic_dicts(value, dynamic_dict_fields)
+        return new_dict
+
+    elif isinstance(obj, list):
+        return [normalize_dynamic_dicts(item, dynamic_dict_fields) for item in obj]
+
+    else:
+        return obj
+
 def get_token():
     """Return Scope Bearer token. Prefer env override; else read Secret Manager."""
     token = os.getenv("SCOPE_API_TOKEN")
@@ -264,6 +284,14 @@ def extract_endpoint(endpoint_key: str, config: EndpointConfig, headers: Dict) -
 
                 # Recursively rename ALL fields with '?' including nested ones
                 rec = rename_question_marks_recursive(rec)
+
+                # Normalize dynamic key dictionaries for BigQuery
+                rec = normalize_dynamic_dicts(rec)
+
+                # Track timestamps for watermark
+                ts = rec.get("updated_at") or rec.get("updatedAt") or rec.get("modifiedAt")
+                if ts and ts > max_seen_ts:
+                    max_seen_ts = ts
 
                 # Track timestamps for watermark
                 ts = rec.get("updated_at") or rec.get("updatedAt") or rec.get("modifiedAt")
