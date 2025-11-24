@@ -210,13 +210,12 @@ def extract_endpoint(endpoint_key: str, config: EndpointConfig, headers: Dict) -
             break
 
         for rec in items:
-            # Filter out archived/soft-deleted records (Scope only supports soft delete)
-            if rec.get("archived?") is True:
-                continue
 
             # Rename problematic field names for BigQuery compatibility
             if 'archived?' in rec:
                 rec['is_archived'] = rec.pop('archived?')
+            if 'show_resources?' in rec:
+                rec['is_show_resources'] = rec.pop('show_resources?')
 
             # Track timestamps for watermark
             ts = rec.get("updated_at") or rec.get("updatedAt") or rec.get("modifiedAt")
