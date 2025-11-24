@@ -8,7 +8,7 @@
 CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_companies`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
-  uris = ['gs://scope-ws-extract/raw/scope/companies_search/*/*.json.gz'],
+  uris = ['gs://scope-ws-extract/raw/scope/companies_search/*'],
   compression = 'GZIP',
   ignore_unknown_values = true,
   max_bad_records = 100
@@ -18,7 +18,7 @@ OPTIONS (
 CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_users`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
-  uris = ['gs://scope-ws-extract/raw/scope/users_search/*/*.json.gz'],
+  uris = ['gs://scope-ws-extract/raw/scope/users_search/*'],
   compression = 'GZIP',
   ignore_unknown_values = true,
   max_bad_records = 100
@@ -28,7 +28,7 @@ OPTIONS (
 CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_task_statuses`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
-  uris = ['gs://scope-ws-extract/raw/scope/task-statuses_search/*/*.json.gz'],
+  uris = ['gs://scope-ws-extract/raw/scope/task-statuses_search/*'],
   compression = 'GZIP',
   ignore_unknown_values = true,
   max_bad_records = 100
@@ -38,7 +38,7 @@ OPTIONS (
 CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_task_types`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
-  uris = ['gs://scope-ws-extract/raw/scope/task-types_search/*/*.json.gz'],
+  uris = ['gs://scope-ws-extract/raw/scope/task-types_search/*'],
   compression = 'GZIP',
   ignore_unknown_values = true,
   max_bad_records = 100
@@ -48,7 +48,7 @@ OPTIONS (
 CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_company_users`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
-  uris = ['gs://scope-ws-extract/raw/scope/company-users_search/*/*.json.gz'],
+  uris = ['gs://scope-ws-extract/raw/scope/company-users_search/*'],
   compression = 'GZIP',
   ignore_unknown_values = true,
   max_bad_records = 100
@@ -58,7 +58,7 @@ OPTIONS (
 CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_lists`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
-  uris = ['gs://scope-ws-extract/raw/scope/lists_search/*/*.json.gz'],
+  uris = ['gs://scope-ws-extract/raw/scope/lists_search/*'],
   compression = 'GZIP',
   ignore_unknown_values = true,
   max_bad_records = 100
@@ -68,7 +68,7 @@ OPTIONS (
 CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_tasks`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
-  uris = ['gs://scope-ws-extract/raw/scope/tasks_search/*/*.json.gz'],
+  uris = ['gs://scope-ws-extract/raw/scope/tasks_search/*'],
   compression = 'GZIP',
   ignore_unknown_values = true,
   max_bad_records = 100
@@ -78,7 +78,7 @@ OPTIONS (
 CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_field_groups`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
-  uris = ['gs://scope-ws-extract/raw/scope/field-groups_search/*/*.json.gz'],
+  uris = ['gs://scope-ws-extract/raw/scope/field-groups_search/*'],
   compression = 'GZIP',
   ignore_unknown_values = true,
   max_bad_records = 100
@@ -88,7 +88,7 @@ OPTIONS (
 CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_fields`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
-  uris = ['gs://scope-ws-extract/raw/scope/fields_search/*/*.json.gz'],
+  uris = ['gs://scope-ws-extract/raw/scope/fields_search/*'],
   compression = 'GZIP',
   ignore_unknown_values = true,
   max_bad_records = 100
@@ -98,7 +98,7 @@ OPTIONS (
 CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_tags`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
-  uris = ['gs://scope-ws-extract/raw/scope/tags_search/*/*.json.gz'],
+  uris = ['gs://scope-ws-extract/raw/scope/tags_search/*'],
   compression = 'GZIP',
   ignore_unknown_values = true,
   max_bad_records = 100

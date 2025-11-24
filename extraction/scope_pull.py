@@ -214,6 +214,10 @@ def extract_endpoint(endpoint_key: str, config: EndpointConfig, headers: Dict) -
             if rec.get("archived?") is True:
                 continue
 
+            # Rename problematic field names for BigQuery compatibility
+            if 'archived?' in rec:
+                rec['is_archived'] = rec.pop('archived?')
+
             # Track timestamps for watermark
             ts = rec.get("updated_at") or rec.get("updatedAt") or rec.get("modifiedAt")
             if ts and ts > max_seen_ts:
