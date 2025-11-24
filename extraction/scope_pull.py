@@ -216,6 +216,11 @@ def extract_endpoint(endpoint_key: str, config: EndpointConfig, headers: Dict) -
                 rec['is_archived'] = rec.pop('archived?')
             if 'show_resources?' in rec:
                 rec['is_show_resources'] = rec.pop('show_resources?')
+            if 'published?' in rec:
+                rec['is_published'] = rec.pop('published?')
+            if 'published_for_web?' in rec:
+                rec['is_published'] = rec.pop('published_for_web?')
+
 
             # Track timestamps for watermark
             ts = rec.get("updated_at") or rec.get("updatedAt") or rec.get("modifiedAt")
