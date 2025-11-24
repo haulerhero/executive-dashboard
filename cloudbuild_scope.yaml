@@ -1,0 +1,5 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/hh-product/scope-extractor', '-f', 'extraction/Dockerfile.scope', '.']
+images:
+  - 'gcr.io/hh-product/scope-extractor'
