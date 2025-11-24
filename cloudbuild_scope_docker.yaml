@@ -1,5 +1,20 @@
 steps:
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/hh-product/scope-extractor', '-f', 'extraction/Dockerfile.scope', '.']
+    args: 
+      - 'build'
+      - '-t'
+      - 'gcr.io/hh-product/scope-extraction:latest'
+      - '-t'
+      - 'gcr.io/hh-product/scope-extraction:$BUILD_ID'
+      - '-t'
+      - 'gcr.io/hh-product/scope-extraction:${_BUILD_TAG}'
+      - '-f'
+      - 'extraction/Dockerfile.scope'
+      - '.'
 images:
-  - 'gcr.io/hh-product/scope-extractor'
+  - 'gcr.io/hh-product/scope-extraction:latest'
+  - 'gcr.io/hh-product/scope-extraction:$BUILD_ID'
+  - 'gcr.io/hh-product/scope-extraction:${_BUILD_TAG}'
+
+substitutions:
+  _BUILD_TAG: 'manual'
