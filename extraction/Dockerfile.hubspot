@@ -7,7 +7,7 @@ FROM python:3.11-slim
    RUN pip install --no-cache-dir -r requirements.txt
 
    # Copy extraction script
-   COPY extraction/hubspot_pull.py .
+   COPY extraction/Hubspot_pull.py .
 
    # Set entrypoint
    CMD ["python", "hubspot_pull.py"]
