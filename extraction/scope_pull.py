@@ -211,16 +211,30 @@ def extract_endpoint(endpoint_key: str, config: EndpointConfig, headers: Dict) -
 
         for rec in items:
 
-            # Rename problematic field names for BigQuery compatibility
-            if 'archived?' in rec:
-                rec['is_archived'] = rec.pop('archived?')
-            if 'show_resources?' in rec:
-                rec['is_show_resources'] = rec.pop('show_resources?')
-            if 'published?' in rec:
-                rec['is_published'] = rec.pop('published?')
-            if 'published_for_web?' in rec:
-                rec['is_published'] = rec.pop('published_for_web?')
+            # Rename ALL fields with "?" for BigQuery compatibility
+            problematic_fields = [k for k in list(rec.keys()) if '?' in k]
 
+            # Debug logging - only show once per endpoint
+            if problematic_fields and offset == 0 and total == 0:
+                print(f"  Found fields with '?' in {endpoint_key}: {problematic_fields}")
+
+            # Rename each problematic field
+            for old_field in problematic_fields:
+                if old_field.endswith('?'):
+                    base_name = old_field[:-1]  # Remove the '?'
+
+                    # For boolean-sounding fields, prefix with 'is_'
+                    boolean_indicators = ['archived', 'published', 'active', 'enabled', 'disabled',
+                                          'show_resources', 'published_for_web', 'visible', 'hidden',
+                                          'required', 'optional', 'default']
+
+                    if base_name in boolean_indicators:
+                        new_field = f'is_{base_name}'
+                    else:
+                        # For other fields, just remove the '?'
+                        new_field = base_name
+
+                    rec[new_field] = rec.pop(old_field)
 
             # Track timestamps for watermark
             ts = rec.get("updated_at") or rec.get("updatedAt") or rec.get("modifiedAt")
@@ -242,9 +256,9 @@ def extract_endpoint(endpoint_key: str, config: EndpointConfig, headers: Dict) -
         upload_gzip_bytes(BUCKET, part_key, ndjson_buffer.getvalue())
         upload_gzip_bytes(BUCKET, success_key, gzip.compress(b""))
         write_state(config.state_key, max_seen_ts)
-        print(f"✓ {endpoint_key}: {total} records → gs://{BUCKET}/{part_key}")
+        print(f"âœ“ {endpoint_key}: {total} records â†’ gs://{BUCKET}/{part_key}")
     else:
-        print(f"✓ {endpoint_key}: No new records")
+        print(f"âœ“ {endpoint_key}: No new records")
 
     return total
 
@@ -261,7 +275,7 @@ def resolve_dependencies(endpoints: Dict[str, EndpointConfig]) -> List[str]:
     for endpoint in endpoints.keys():
         in_degree[endpoint] = 0
 
-    # Build edges (dependency → endpoint)
+    # Build edges (dependency â†’ endpoint)
     for endpoint, config in endpoints.items():
         for dep in config.dependencies:
             if dep in endpoints:  # Only consider configured dependencies
@@ -299,7 +313,7 @@ def main():
     # Resolve execution order
     try:
         execution_order = resolve_dependencies(ENDPOINTS)
-        print(f"Execution order: {' → '.join(execution_order)}")
+        print(f"Execution order: {' â†’ '.join(execution_order)}")
     except ValueError as e:
         print(f"Dependency error: {e}")
         return
@@ -315,7 +329,7 @@ def main():
             total_records += records
             successful_endpoints.append(endpoint_key)
         except Exception as e:
-            print(f"✗ {endpoint_key} failed: {e}")
+            print(f"âœ— {endpoint_key} failed: {e}")
             # Continue with other endpoints rather than failing completely
             continue
 
