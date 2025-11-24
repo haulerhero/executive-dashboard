@@ -1,0 +1,5 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/hh-product/hubspot-extractor', '-f', 'Dockerfile.hubspot', '.']
+images:
+  - 'gcr.io/hh-product/hubspot-extractor'

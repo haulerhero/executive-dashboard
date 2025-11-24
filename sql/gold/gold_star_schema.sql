@@ -10,7 +10,7 @@
 -- Combines HubSpot and Scope customer records
 -- Links deals to implementation projects via hubspot_id
 
-CREATE OR REPLACE TABLE `gold.dim_customers` AS
+CREATE OR REPLACE TABLE `executive_dash_gold.dim_customers` AS
 WITH hubspot_base AS (
   SELECT
     hubspot_company_id,
@@ -18,7 +18,7 @@ WITH hubspot_base AS (
     domain,
     current_software,
     create_date as hubspot_created_at
-  FROM `silver.hubspot_companies`
+  FROM `executive_dash_silver.hubspot_companies`
 ),
 scope_base AS (
   SELECT
@@ -26,7 +26,7 @@ scope_base AS (
     hubspot_company_id,
     company_name as scope_company_name,
     created_at as scope_created_at
-  FROM `silver.scope_companies`
+  FROM `executive_dash_silver.scope_companies`
   WHERE hubspot_company_id IS NOT NULL
 )
 SELECT
@@ -64,7 +64,7 @@ FULL OUTER JOIN scope_base s ON h.hubspot_company_id = s.hubspot_company_id;
 -- ============================================================================
 -- Implementation Managers, Data Engineers, Sales Reps, etc.
 
-CREATE OR REPLACE TABLE `gold.dim_users` AS
+CREATE OR REPLACE TABLE `executive_dash_gold.dim_users` AS
 SELECT
   user_id,
   email,
@@ -75,7 +75,7 @@ SELECT
   created_at,
   updated_at,
   CURRENT_TIMESTAMP() as loaded_at
-FROM `silver.scope_users`;
+FROM `executive_dash_silver.scope_users`;
 
 
 -- ============================================================================
@@ -83,7 +83,7 @@ FROM `silver.scope_users`;
 -- ============================================================================
 
 -- Task Statuses
-CREATE OR REPLACE TABLE `gold.dim_task_statuses` AS
+CREATE OR REPLACE TABLE `executive_dash_gold.dim_task_statuses` AS
 SELECT
   status_id,
   status_name,
@@ -92,10 +92,10 @@ SELECT
   created_at,
   updated_at,
   CURRENT_TIMESTAMP() as loaded_at
-FROM `silver.scope_task_statuses`;
+FROM `executive_dash_silver.scope_task_statuses`;
 
 -- Task Types
-CREATE OR REPLACE TABLE `gold.dim_task_types` AS
+CREATE OR REPLACE TABLE `executive_dash_gold.dim_task_types` AS
 SELECT
   type_id,
   type_name,
@@ -103,7 +103,7 @@ SELECT
   created_at,
   updated_at,
   CURRENT_TIMESTAMP() as loaded_at
-FROM `silver.scope_task_types`;
+FROM `executive_dash_silver.scope_task_types`;
 
 
 -- ============================================================================
@@ -112,7 +112,7 @@ FROM `silver.scope_task_types`;
 -- All closed deals from HubSpot (last 18 months)
 -- This is the starting point for customer journey tracking
 
-CREATE OR REPLACE TABLE `gold.fact_deals` AS
+CREATE OR REPLACE TABLE `executive_dash_gold.fact_deals` AS
 SELECT
   -- IDs
   d.deal_id,
@@ -185,8 +185,8 @@ SELECT
   
   -- Metadata
   CURRENT_TIMESTAMP() as loaded_at
-FROM `silver.hubspot_deals` d
-LEFT JOIN `gold.dim_customers` c ON d.hubspot_company_id = c.hubspot_company_id;
+FROM `executive_dash_silver.hubspot_deals` d
+LEFT JOIN `executive_dash_gold.dim_customers` c ON d.hubspot_company_id = c.hubspot_company_id;
 
 
 -- ============================================================================
@@ -195,7 +195,7 @@ LEFT JOIN `gold.dim_customers` c ON d.hubspot_company_id = c.hubspot_company_id;
 -- All tasks from Scope with full context for milestone tracking
 -- This is where Welcome Call, Data Pull, Training, Go-Live, etc. are tracked
 
-CREATE OR REPLACE TABLE `gold.fact_implementation_milestones` AS
+CREATE OR REPLACE TABLE `executive_dash_gold.fact_implementation_milestones` AS
 SELECT
   -- IDs
   t.task_id,
@@ -264,11 +264,11 @@ SELECT
   
   -- Metadata
   CURRENT_TIMESTAMP() as loaded_at
-FROM `silver.scope_tasks` t
-LEFT JOIN `gold.dim_customers` c ON t.scope_company_id = c.scope_company_id
-LEFT JOIN `gold.dim_task_statuses` ts ON t.task_status_id = ts.status_id
-LEFT JOIN `gold.dim_task_types` tt ON t.task_type_id = tt.type_id
-LEFT JOIN `gold.dim_users` u ON t.assigned_user_id = u.user_id;
+FROM `executive_dash_silver.scope_tasks` t
+LEFT JOIN `executive_dash_gold.dim_customers` c ON t.scope_company_id = c.scope_company_id
+LEFT JOIN `executive_dash_gold.dim_task_statuses` ts ON t.task_status_id = ts.status_id
+LEFT JOIN `executive_dash_gold.dim_task_types` tt ON t.task_type_id = tt.type_id
+LEFT JOIN `executive_dash_gold.dim_users` u ON t.assigned_user_id = u.user_id;
 
 
 -- ============================================================================
@@ -277,7 +277,7 @@ LEFT JOIN `gold.dim_users` u ON t.assigned_user_id = u.user_id;
 -- Aggregated view showing key milestones per customer
 -- Used for executive reporting
 
-CREATE OR REPLACE VIEW `gold.view_customer_journey_summary` AS
+CREATE OR REPLACE VIEW `executive_dash_gold.view_customer_journey_summary` AS
 WITH milestone_dates AS (
   SELECT
     hubspot_company_id,
@@ -289,7 +289,7 @@ WITH milestone_dates AS (
     MAX(CASE WHEN milestone_type = 'Data Sign Off' AND completed_at IS NOT NULL THEN completed_at END) as data_signoff_date,
     MAX(CASE WHEN milestone_type = 'Go Live' AND completed_at IS NOT NULL THEN completed_at END) as golive_date,
     MAX(CASE WHEN milestone_type = 'CS Handoff' AND completed_at IS NOT NULL THEN completed_at END) as cs_handoff_date
-  FROM `gold.fact_implementation_milestones`
+  FROM `executive_dash_gold.fact_implementation_milestones`
   WHERE milestone_type != 'Other'
   GROUP BY hubspot_company_id
 )
@@ -336,6 +336,6 @@ SELECT
   d.hubspot_company_url,
   
   CURRENT_TIMESTAMP() as loaded_at
-FROM `gold.fact_deals` d
+FROM `executive_dash_gold.fact_deals` d
 LEFT JOIN milestone_dates m ON d.hubspot_company_id = m.hubspot_company_id
 WHERE d.customer_stage = 'Implementation';  -- Only show customers in implementation

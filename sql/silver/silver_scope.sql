@@ -12,7 +12,7 @@
 -- Silver: Scope Companies
 -- Customer implementations being managed in Scope
 -- Links to HubSpot via hubspot_id field
-CREATE OR REPLACE TABLE `silver.scope_companies` AS
+CREATE OR REPLACE TABLE `executive_dash_silver.scope_companies` AS
 SELECT
   -- IDs and relationships
   id as scope_company_id,
@@ -28,16 +28,16 @@ SELECT
   
   -- Metadata
   CURRENT_TIMESTAMP() as loaded_at
-FROM `raw.scope_companies`
+FROM `executive_dash_raw.scope_companies`
 WHERE id IS NOT NULL
   AND COALESCE(archived, false) = false  -- Exclude archived
-  AND _FILE_NAME LIKE '%' || (SELECT MAX(run) FROM `raw.scope_companies`) || '%'
+  AND _FILE_NAME LIKE '%' || (SELECT MAX(run) FROM `executive_dash_raw.scope_companies`) || '%'
 QUALIFY ROW_NUMBER() OVER (PARTITION BY id ORDER BY updated_at DESC) = 1;
 
 
 -- Silver: Scope Users
 -- Internal Hauler Hero team members (Implementation Managers, Data Engineers, etc.)
-CREATE OR REPLACE TABLE `silver.scope_users` AS
+CREATE OR REPLACE TABLE `executive_dash_silver.scope_users` AS
 SELECT
   -- IDs
   id as user_id,
@@ -57,15 +57,15 @@ SELECT
   
   -- Metadata
   CURRENT_TIMESTAMP() as loaded_at
-FROM `raw.scope_users`
+FROM `executive_dash_raw.scope_users`
 WHERE id IS NOT NULL
-  AND _FILE_NAME LIKE '%' || (SELECT MAX(run) FROM `raw.scope_users`) || '%'
+  AND _FILE_NAME LIKE '%' || (SELECT MAX(run) FROM `executive_dash_raw.scope_users`) || '%'
 QUALIFY ROW_NUMBER() OVER (PARTITION BY id ORDER BY updated_at DESC) = 1;
 
 
 -- Silver: Scope Task Statuses
 -- Reference data for task status values
-CREATE OR REPLACE TABLE `silver.scope_task_statuses` AS
+CREATE OR REPLACE TABLE `executive_dash_silver.scope_task_statuses` AS
 SELECT
   -- IDs
   id as status_id,
@@ -81,15 +81,15 @@ SELECT
   
   -- Metadata
   CURRENT_TIMESTAMP() as loaded_at
-FROM `raw.scope_task_statuses`
+FROM `executive_dash_raw.scope_task_statuses`
 WHERE id IS NOT NULL
-  AND _FILE_NAME LIKE '%' || (SELECT MAX(run) FROM `raw.scope_task_statuses`) || '%'
+  AND _FILE_NAME LIKE '%' || (SELECT MAX(run) FROM `executive_dash_raw.scope_task_statuses`) || '%'
 QUALIFY ROW_NUMBER() OVER (PARTITION BY id ORDER BY updated_at DESC) = 1;
 
 
 -- Silver: Scope Task Types
 -- Reference data for task categories
-CREATE OR REPLACE TABLE `silver.scope_task_types` AS
+CREATE OR REPLACE TABLE `executive_dash_silver.scope_task_types` AS
 SELECT
   -- IDs
   id as type_id,
@@ -104,9 +104,9 @@ SELECT
   
   -- Metadata
   CURRENT_TIMESTAMP() as loaded_at
-FROM `raw.scope_task_types`
+FROM `executive_dash_raw.scope_task_types`
 WHERE id IS NOT NULL
-  AND _FILE_NAME LIKE '%' || (SELECT MAX(run) FROM `raw.scope_task_types`) || '%'
+  AND _FILE_NAME LIKE '%' || (SELECT MAX(run) FROM `executive_dash_raw.scope_task_types`) || '%'
 QUALIFY ROW_NUMBER() OVER (PARTITION BY id ORDER BY updated_at DESC) = 1;
 
 
@@ -116,7 +116,7 @@ QUALIFY ROW_NUMBER() OVER (PARTITION BY id ORDER BY updated_at DESC) = 1;
 
 -- Silver: Scope Company Users
 -- External customer contacts linked to companies
-CREATE OR REPLACE TABLE `silver.scope_company_users` AS
+CREATE OR REPLACE TABLE `executive_dash_silver.scope_company_users` AS
 SELECT
   -- IDs and relationships
   id as company_user_id,
@@ -134,15 +134,15 @@ SELECT
   
   -- Metadata
   CURRENT_TIMESTAMP() as loaded_at
-FROM `raw.scope_company_users`
+FROM `executive_dash_raw.scope_company_users`
 WHERE id IS NOT NULL
-  AND _FILE_NAME LIKE '%' || (SELECT MAX(run) FROM `raw.scope_company_users`) || '%'
+  AND _FILE_NAME LIKE '%' || (SELECT MAX(run) FROM `executive_dash_raw.scope_company_users`) || '%'
 QUALIFY ROW_NUMBER() OVER (PARTITION BY id ORDER BY updated_at DESC) = 1;
 
 
 -- Silver: Scope Lists
 -- Project/work organization structure (Lists = Implementation Projects)
-CREATE OR REPLACE TABLE `silver.scope_lists` AS
+CREATE OR REPLACE TABLE `executive_dash_silver.scope_lists` AS
 SELECT
   -- IDs
   id as list_id,
@@ -178,9 +178,9 @@ SELECT
   
   -- Metadata
   CURRENT_TIMESTAMP() as loaded_at
-FROM `raw.scope_lists`
+FROM `executive_dash_raw.scope_lists`
 WHERE id IS NOT NULL
-  AND _FILE_NAME LIKE '%' || (SELECT MAX(run) FROM `raw.scope_lists`) || '%'
+  AND _FILE_NAME LIKE '%' || (SELECT MAX(run) FROM `executive_dash_raw.scope_lists`) || '%'
 QUALIFY ROW_NUMBER() OVER (PARTITION BY id ORDER BY updated_at DESC) = 1;
 
 
@@ -191,7 +191,7 @@ QUALIFY ROW_NUMBER() OVER (PARTITION BY id ORDER BY updated_at DESC) = 1;
 -- Silver: Scope Tasks
 -- Primary activity/engagement data for milestone tracking
 -- These are the key actions (Welcome Call, Data Pull, Training, Go-Live, etc.)
-CREATE OR REPLACE TABLE `silver.scope_tasks` AS
+CREATE OR REPLACE TABLE `executive_dash_silver.scope_tasks` AS
 SELECT
   -- IDs and relationships
   id as task_id,
@@ -242,10 +242,10 @@ SELECT
   
   -- Metadata
   CURRENT_TIMESTAMP() as loaded_at
-FROM `raw.scope_tasks`
+FROM `executive_dash_raw.scope_tasks`
 WHERE id IS NOT NULL
   AND COALESCE(archived, false) = false
-  AND _FILE_NAME LIKE '%' || (SELECT MAX(run) FROM `raw.scope_tasks`) || '%'
+  AND _FILE_NAME LIKE '%' || (SELECT MAX(run) FROM `executive_dash_raw.scope_tasks`) || '%'
 QUALIFY ROW_NUMBER() OVER (PARTITION BY id ORDER BY updated_at DESC) = 1;
 
 
@@ -255,7 +255,7 @@ QUALIFY ROW_NUMBER() OVER (PARTITION BY id ORDER BY updated_at DESC) = 1;
 
 -- Silver: Scope Field Groups
 -- Organization of custom fields
-CREATE OR REPLACE TABLE `silver.scope_field_groups` AS
+CREATE OR REPLACE TABLE `executive_dash_silver.scope_field_groups` AS
 SELECT
   -- IDs
   id as field_group_id,
@@ -269,15 +269,15 @@ SELECT
   
   -- Metadata
   CURRENT_TIMESTAMP() as loaded_at
-FROM `raw.scope_field_groups`
+FROM `executive_dash_raw.scope_field_groups`
 WHERE id IS NOT NULL
-  AND _FILE_NAME LIKE '%' || (SELECT MAX(run) FROM `raw.scope_field_groups`) || '%'
+  AND _FILE_NAME LIKE '%' || (SELECT MAX(run) FROM `executive_dash_raw.scope_field_groups`) || '%'
 QUALIFY ROW_NUMBER() OVER (PARTITION BY id ORDER BY updated_at DESC) = 1;
 
 
 -- Silver: Scope Fields
 -- Custom field definitions
-CREATE OR REPLACE TABLE `silver.scope_fields` AS
+CREATE OR REPLACE TABLE `executive_dash_silver.scope_fields` AS
 SELECT
   -- IDs and relationships
   id as field_id,
@@ -292,15 +292,15 @@ SELECT
   
   -- Metadata
   CURRENT_TIMESTAMP() as loaded_at
-FROM `raw.scope_fields`
+FROM `executive_dash_raw.scope_fields`
 WHERE id IS NOT NULL
-  AND _FILE_NAME LIKE '%' || (SELECT MAX(run) FROM `raw.scope_fields`) || '%'
+  AND _FILE_NAME LIKE '%' || (SELECT MAX(run) FROM `executive_dash_raw.scope_fields`) || '%'
 QUALIFY ROW_NUMBER() OVER (PARTITION BY id ORDER BY updated_at DESC) = 1;
 
 
 -- Silver: Scope Tags
 -- Tag values for additional customer context
-CREATE OR REPLACE TABLE `silver.scope_tags` AS
+CREATE OR REPLACE TABLE `executive_dash_silver.scope_tags` AS
 SELECT
   -- IDs and relationships
   id as tag_id,
@@ -316,7 +316,7 @@ SELECT
   
   -- Metadata
   CURRENT_TIMESTAMP() as loaded_at
-FROM `raw.scope_tags`
+FROM `executive_dash_raw.scope_tags`
 WHERE id IS NOT NULL
-  AND _FILE_NAME LIKE '%' || (SELECT MAX(run) FROM `raw.scope_tags`) || '%'
+  AND _FILE_NAME LIKE '%' || (SELECT MAX(run) FROM `executive_dash_raw.scope_tags`) || '%'
 QUALIFY ROW_NUMBER() OVER (PARTITION BY id ORDER BY updated_at DESC) = 1;

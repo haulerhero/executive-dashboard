@@ -1,12 +1,12 @@
 -- ============================================================================
 -- Silver Layer: HubSpot Data
 -- Purpose: Clean and standardize HubSpot deals and companies
--- Source: raw.hubspot_deals, raw.hubspot_companies
+-- Source: executive_dash_raw.hubspot_deals, executive_dash_raw.hubspot_companies
 -- ============================================================================
 
 -- Silver: HubSpot Deals
 -- Tracks all deals closed in the last 18 months (filtered at extraction)
-CREATE OR REPLACE TABLE `silver.hubspot_deals` AS
+CREATE OR REPLACE TABLE `executive_dash_silver.hubspot_deals` AS
 SELECT
   -- IDs and relationships
   id as deal_id,
@@ -33,15 +33,15 @@ SELECT
   
   -- Metadata
   CURRENT_TIMESTAMP() as loaded_at
-FROM `raw.hubspot_deals`
+FROM `executive_dash_raw.hubspot_deals`
 WHERE id IS NOT NULL
-  AND _FILE_NAME LIKE '%' || (SELECT MAX(run) FROM `raw.hubspot_deals`) || '%'  -- Latest run only
+  AND _FILE_NAME LIKE '%' || (SELECT MAX(run) FROM `executive_dash_raw.hubspot_deals`) || '%'  -- Latest run only
 QUALIFY ROW_NUMBER() OVER (PARTITION BY id ORDER BY hs_lastmodifieddate DESC) = 1;  -- Dedupe by latest modified
 
 
 -- Silver: HubSpot Companies
 -- Customer companies associated with closed deals (all properties extracted)
-CREATE OR REPLACE TABLE `silver.hubspot_companies` AS
+CREATE OR REPLACE TABLE `executive_dash_silver.hubspot_companies` AS
 SELECT
   -- IDs
   id as hubspot_company_id,
@@ -62,7 +62,7 @@ SELECT
   
   -- Metadata
   CURRENT_TIMESTAMP() as loaded_at
-FROM `raw.hubspot_companies`
+FROM `executive_dash_raw.hubspot_companies`
 WHERE id IS NOT NULL
-  AND _FILE_NAME LIKE '%' || (SELECT MAX(run) FROM `raw.hubspot_companies`) || '%'  -- Latest run only
+  AND _FILE_NAME LIKE '%' || (SELECT MAX(run) FROM `executive_dash_raw.hubspot_companies`) || '%'  -- Latest run only
 QUALIFY ROW_NUMBER() OVER (PARTITION BY id ORDER BY hs_lastmodifieddate DESC) = 1;  -- Dedupe by latest modified

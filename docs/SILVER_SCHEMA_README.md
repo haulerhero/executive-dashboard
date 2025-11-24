@@ -8,14 +8,14 @@ Created two separate silver schema files for independent execution and cleaner o
 ## File: silver_hubspot.sql
 
 ### Tables Created:
-1. **silver.hubspot_deals**
-   - Source: raw.hubspot_deals
+1. **executive_dash_silver.hubspot_deals**
+   - Source: executive_dash_raw.hubspot_deals
    - Filters: Latest run only, dedupe by most recent modification
    - Key fields: deal_id, hubspot_company_id, deal_amount, implementation_cost, daily_routes, close_date
    - Links: hubspot_deal_url, hubspot_company_url
 
-2. **silver.hubspot_companies**
-   - Source: raw.hubspot_companies
+2. **executive_dash_silver.hubspot_companies**
+   - Source: executive_dash_raw.hubspot_companies
    - Filters: Latest run only, dedupe by most recent modification
    - Key fields: hubspot_company_id, company_name, domain, current_software
    - Note: Extraction pulls ALL properties, but silver schema only maps known critical fields
@@ -25,32 +25,32 @@ Created two separate silver schema files for independent execution and cleaner o
 ### Tables Created (organized by tier):
 
 #### TIER 1: Core Customer and Reference Data
-1. **silver.scope_companies**
+1. **executive_dash_silver.scope_companies**
    - Links to HubSpot via hubspot_company_id
    - Filters: Excludes archived, latest run
    
-2. **silver.scope_users**
+2. **executive_dash_silver.scope_users**
    - Internal Hauler Hero team members
    - Full name concatenation included
    
-3. **silver.scope_task_statuses**
+3. **executive_dash_silver.scope_task_statuses**
    - Reference data for task states
    
-4. **silver.scope_task_types**
+4. **executive_dash_silver.scope_task_types**
    - Reference data for task categories
 
 #### TIER 2: Customer Relationship and Structure
-5. **silver.scope_company_users**
+5. **executive_dash_silver.scope_company_users**
    - External customer contacts
    - Links to scope_companies
    
-6. **silver.scope_lists**
+6. **executive_dash_silver.scope_lists**
    - Implementation projects/work organization
    - Handles array fields: owner_user_ids, timeframe
    - Parses timeframe into start/end timestamps
 
 #### TIER 3: Activity and Engagement (Critical for Dashboard)
-7. **silver.scope_tasks**
+7. **executive_dash_silver.scope_tasks**
    - Primary milestone tracking (Welcome Call, Data Pull, Training, Go-Live, etc.)
    - Handles array field: list_ids
    - Parses timeframe into start/end timestamps
@@ -58,14 +58,14 @@ Created two separate silver schema files for independent execution and cleaner o
    - Links to: scope_companies, scope_users, scope_task_statuses, scope_task_types
 
 #### TIER 4: Metadata
-8. **silver.scope_field_groups**
+8. **executive_dash_silver.scope_field_groups**
    - Custom field organization
    
-9. **silver.scope_fields**
+9. **executive_dash_silver.scope_fields**
    - Custom field definitions
    - Links to scope_field_groups
    
-10. **silver.scope_tags**
+10. **executive_dash_silver.scope_tags**
     - Tag values for enrichment
     - Links to scope_fields
 

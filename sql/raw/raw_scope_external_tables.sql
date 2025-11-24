@@ -5,7 +5,7 @@
 -- ============================================================================
 
 -- External table for Scope Companies
-CREATE OR REPLACE EXTERNAL TABLE `raw.scope_companies`
+CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_companies`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
   uris = ['gs://scope-ws-extract/raw/scope/companies_search/*/*.json.gz'],
@@ -15,7 +15,7 @@ OPTIONS (
 );
 
 -- External table for Scope Users
-CREATE OR REPLACE EXTERNAL TABLE `raw.scope_users`
+CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_users`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
   uris = ['gs://scope-ws-extract/raw/scope/users_search/*/*.json.gz'],
@@ -25,7 +25,7 @@ OPTIONS (
 );
 
 -- External table for Scope Task Statuses
-CREATE OR REPLACE EXTERNAL TABLE `raw.scope_task_statuses`
+CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_task_statuses`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
   uris = ['gs://scope-ws-extract/raw/scope/task-statuses_search/*/*.json.gz'],
@@ -35,7 +35,7 @@ OPTIONS (
 );
 
 -- External table for Scope Task Types
-CREATE OR REPLACE EXTERNAL TABLE `raw.scope_task_types`
+CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_task_types`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
   uris = ['gs://scope-ws-extract/raw/scope/task-types_search/*/*.json.gz'],
@@ -45,7 +45,7 @@ OPTIONS (
 );
 
 -- External table for Scope Company Users
-CREATE OR REPLACE EXTERNAL TABLE `raw.scope_company_users`
+CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_company_users`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
   uris = ['gs://scope-ws-extract/raw/scope/company-users_search/*/*.json.gz'],
@@ -55,7 +55,7 @@ OPTIONS (
 );
 
 -- External table for Scope Lists
-CREATE OR REPLACE EXTERNAL TABLE `raw.scope_lists`
+CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_lists`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
   uris = ['gs://scope-ws-extract/raw/scope/lists_search/*/*.json.gz'],
@@ -65,7 +65,7 @@ OPTIONS (
 );
 
 -- External table for Scope Tasks
-CREATE OR REPLACE EXTERNAL TABLE `raw.scope_tasks`
+CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_tasks`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
   uris = ['gs://scope-ws-extract/raw/scope/tasks_search/*/*.json.gz'],
@@ -75,7 +75,7 @@ OPTIONS (
 );
 
 -- External table for Scope Field Groups
-CREATE OR REPLACE EXTERNAL TABLE `raw.scope_field_groups`
+CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_field_groups`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
   uris = ['gs://scope-ws-extract/raw/scope/field-groups_search/*/*.json.gz'],
@@ -85,7 +85,7 @@ OPTIONS (
 );
 
 -- External table for Scope Fields
-CREATE OR REPLACE EXTERNAL TABLE `raw.scope_fields`
+CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_fields`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
   uris = ['gs://scope-ws-extract/raw/scope/fields_search/*/*.json.gz'],
@@ -95,7 +95,7 @@ OPTIONS (
 );
 
 -- External table for Scope Tags
-CREATE OR REPLACE EXTERNAL TABLE `raw.scope_tags`
+CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_tags`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
   uris = ['gs://scope-ws-extract/raw/scope/tags_search/*/*.json.gz'],

@@ -5,7 +5,7 @@
 -- ============================================================================
 
 -- External table for HubSpot Deals
-CREATE OR REPLACE EXTERNAL TABLE `raw.hubspot_deals`
+CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.hubspot_deals`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
   uris = ['gs://scope-ws-extract/raw/hubspot/deals/*/*.json.gz'],
@@ -15,7 +15,7 @@ OPTIONS (
 );
 
 -- External table for HubSpot Companies
-CREATE OR REPLACE EXTERNAL TABLE `raw.hubspot_companies`
+CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.hubspot_companies`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
   uris = ['gs://scope-ws-extract/raw/hubspot/companies/*/*.json.gz'],
