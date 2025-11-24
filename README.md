@@ -1,5 +1,5 @@
 # executive-dashboard pipeline
-Customer Journey Reporting Dashboard - Hubspot -> CRM
+Customer Journey Reporting Dashboard - Hubspot -> Scope
 Automated data pipeline for tracking customer implementation journey from sales through go-live.
 
    ## Data Sources
