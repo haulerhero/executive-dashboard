@@ -164,6 +164,9 @@ def upload_gzip_bytes(bkt_name, key, raw_bytes: bytes):
 
 def extract_endpoint(endpoint_key: str, config: EndpointConfig, headers: Dict) -> int:
     """Extract data for a single endpoint"""
+    print(f"=" * 80)
+    print(f"âš ï¸  CODE VERSION CHECK: This is the UPDATED code with dynamic field renaming")
+    print(f"=" * 80)
     print(f"Starting extraction for {endpoint_key} ({config.resource})")
 
     url = f"{API_BASE}/v1/{config.resource.lstrip('/')}"
@@ -214,9 +217,10 @@ def extract_endpoint(endpoint_key: str, config: EndpointConfig, headers: Dict) -
             # Rename ALL fields with "?" for BigQuery compatibility
             problematic_fields = [k for k in list(rec.keys()) if '?' in k]
 
-            # Debug logging - only show once per endpoint
+            # Debug logging - show for first record of each endpoint
             if problematic_fields and offset == 0 and total == 0:
-                print(f"  Found fields with '?' in {endpoint_key}: {problematic_fields}")
+                print(f"âœ… FIELD RENAMING ACTIVE for {endpoint_key}")
+                print(f"   Found fields with '?': {problematic_fields}")
 
             # Rename each problematic field
             for old_field in problematic_fields:
@@ -233,6 +237,10 @@ def extract_endpoint(endpoint_key: str, config: EndpointConfig, headers: Dict) -
                     else:
                         # For other fields, just remove the '?'
                         new_field = base_name
+
+                    # Show the first few renames for verification
+                    if offset == 0 and total < 3:
+                        print(f"   Renaming: {old_field} â†' {new_field}")
 
                     rec[new_field] = rec.pop(old_field)
 
@@ -340,4 +348,5 @@ def main():
 
 
 if __name__ == "__main__":
+    main()
     main()
