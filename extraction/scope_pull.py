@@ -80,6 +80,31 @@ ENDPOINTS = {
 }
 
 
+def rename_question_marks_recursive(obj):
+    """Recursively rename all keys with '?' in nested structures"""
+    if isinstance(obj, dict):
+        new_dict = {}
+        for key, value in obj.items():
+            # Rename key if it has '?'
+            if '?' in key and key.endswith('?'):
+                base_name = key[:-1]
+                boolean_indicators = ['archived', 'published', 'active', 'enabled', 'disabled',
+                                      'show_resources', 'published_for_web', 'visible', 'hidden',
+                                      'required', 'optional', 'default']
+                new_key = f'is_{base_name}' if base_name in boolean_indicators else base_name
+            else:
+                new_key = key
+
+            # Recursively process value
+            new_dict[new_key] = rename_question_marks_recursive(value)
+        return new_dict
+
+    elif isinstance(obj, list):
+        return [rename_question_marks_recursive(item) for item in obj]
+
+    else:
+        return obj
+
 def get_token():
     """Return Scope Bearer token. Prefer env override; else read Secret Manager."""
     token = os.getenv("SCOPE_API_TOKEN")
@@ -223,34 +248,30 @@ def extract_endpoint(endpoint_key: str, config: EndpointConfig, headers: Dict) -
                 print(f"   Found fields with '?': {problematic_fields}")
 
             # Rename each problematic field
-            for old_field in problematic_fields:
-                if old_field.endswith('?'):
-                    base_name = old_field[:-1]  # Remove the '?'
+            for rec in items:
+                # Get top-level problematic fields for logging
+                problematic_fields = [k for k in list(rec.keys()) if '?' in k]
 
-                    # For boolean-sounding fields, prefix with 'is_'
-                    boolean_indicators = ['archived', 'published', 'active', 'enabled', 'disabled',
-                                          'show_resources', 'published_for_web', 'visible', 'hidden',
-                                          'required', 'optional', 'default']
-
-                    if base_name in boolean_indicators:
-                        new_field = f'is_{base_name}'
-                    else:
-                        # For other fields, just remove the '?'
-                        new_field = base_name
-
-                    # Show the first few renames for verification
+                # Debug logging - show for first record of each endpoint
+                if problematic_fields and offset == 0 and total == 0:
+                    print(f"✅ FIELD RENAMING ACTIVE for {endpoint_key}")
+                    print(f"   Found fields with '?': {problematic_fields}")
                     if offset == 0 and total < 3:
-                        print(f"   Renaming: {old_field} â†' {new_field}")
+                        for field in problematic_fields[:3]:
+                            print(
+                                f"   Renaming: {field} → {field[:-1] if not field[:-1] in ['archived', 'published', 'active', 'enabled', 'disabled', 'show_resources', 'published_for_web', 'visible', 'hidden', 'required', 'optional', 'default'] else 'is_' + field[:-1]}"
+                                )
 
-                    rec[new_field] = rec.pop(old_field)
+                # Recursively rename ALL fields with '?' including nested ones
+                rec = rename_question_marks_recursive(rec)
 
-            # Track timestamps for watermark
-            ts = rec.get("updated_at") or rec.get("updatedAt") or rec.get("modifiedAt")
-            if ts and ts > max_seen_ts:
-                max_seen_ts = ts
+                # Track timestamps for watermark
+                ts = rec.get("updated_at") or rec.get("updatedAt") or rec.get("modifiedAt")
+                if ts and ts > max_seen_ts:
+                    max_seen_ts = ts
 
-            gz.write((json.dumps(rec, separators=(",", ":")) + "\n").encode("utf-8"))
-            total += 1
+                gz.write((json.dumps(rec, separators=(",", ":")) + "\n").encode("utf-8"))
+                total += 1
 
         # Continue pagination if we got a full page
         if len(items) < config.page_size:
