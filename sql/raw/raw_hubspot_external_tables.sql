@@ -8,7 +8,7 @@
 CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.hubspot_deals`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
-  uris = ['gs://scope-ws-extract/raw/hubspot/deals/*'],
+  uris = ['gs://scope-ws-extract/raw/hubspot/deals/*/*.json.gz'],
   compression = 'GZIP',
   ignore_unknown_values = true,
   max_bad_records = 100
@@ -18,7 +18,7 @@ OPTIONS (
 CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.hubspot_companies`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
-  uris = ['gs://scope-ws-extract/raw/hubspot/companies/*'],
+  uris = ['gs://scope-ws-extract/raw/hubspot/companies/*/*.json.gz'],
   compression = 'GZIP',
   ignore_unknown_values = true,
   max_bad_records = 100

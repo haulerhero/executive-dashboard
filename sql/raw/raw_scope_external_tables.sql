@@ -2,13 +2,14 @@
 -- Raw Layer: Scope External Tables
 -- Purpose: Create external tables pointing to GCS JSON data
 -- Note: These tables query GCS directly (no data stored in BigQuery)
+-- Note: field_groups, fields, tags not available - API returns 403/400
 -- ============================================================================
 
 -- External table for Scope Companies
 CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_companies`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
-  uris = ['gs://scope-ws-extract/raw/scope/companies_search/*'],
+  uris = ['gs://scope-ws-extract/raw/scope/companies_search/*/*.json.gz'],
   compression = 'GZIP',
   ignore_unknown_values = true,
   max_bad_records = 100
@@ -18,7 +19,7 @@ OPTIONS (
 CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_users`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
-  uris = ['gs://scope-ws-extract/raw/scope/users_search/*'],
+  uris = ['gs://scope-ws-extract/raw/scope/users_search/*/*.json.gz'],
   compression = 'GZIP',
   ignore_unknown_values = true,
   max_bad_records = 100
@@ -28,7 +29,7 @@ OPTIONS (
 CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_task_statuses`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
-  uris = ['gs://scope-ws-extract/raw/scope/task-statuses_search/*'],
+  uris = ['gs://scope-ws-extract/raw/scope/task-statuses_search/*/*.json.gz'],
   compression = 'GZIP',
   ignore_unknown_values = true,
   max_bad_records = 100
@@ -38,7 +39,7 @@ OPTIONS (
 CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_task_types`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
-  uris = ['gs://scope-ws-extract/raw/scope/task-types_search/*'],
+  uris = ['gs://scope-ws-extract/raw/scope/task-types_search/*/*.json.gz'],
   compression = 'GZIP',
   ignore_unknown_values = true,
   max_bad_records = 100
@@ -48,7 +49,7 @@ OPTIONS (
 CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_company_users`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
-  uris = ['gs://scope-ws-extract/raw/scope/company-users_search/*'],
+  uris = ['gs://scope-ws-extract/raw/scope/company-users_search/*/*.json.gz'],
   compression = 'GZIP',
   ignore_unknown_values = true,
   max_bad_records = 100
@@ -58,7 +59,7 @@ OPTIONS (
 CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_lists`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
-  uris = ['gs://scope-ws-extract/raw/scope/lists_search/*'],
+  uris = ['gs://scope-ws-extract/raw/scope/lists_search/*/*.json.gz'],
   compression = 'GZIP',
   ignore_unknown_values = true,
   max_bad_records = 100
@@ -68,38 +69,45 @@ OPTIONS (
 CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_tasks`
 OPTIONS (
   format = 'NEWLINE_DELIMITED_JSON',
-  uris = ['gs://scope-ws-extract/raw/scope/tasks_search/*'],
+  uris = ['gs://scope-ws-extract/raw/scope/tasks_search/*/*.json.gz'],
   compression = 'GZIP',
   ignore_unknown_values = true,
   max_bad_records = 100
 );
 
--- External table for Scope Field Groups
-CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_field_groups`
-OPTIONS (
-  format = 'NEWLINE_DELIMITED_JSON',
-  uris = ['gs://scope-ws-extract/raw/scope/field-groups_search/*'],
-  compression = 'GZIP',
-  ignore_unknown_values = true,
-  max_bad_records = 100
-);
 
--- External table for Scope Fields
-CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_fields`
-OPTIONS (
-  format = 'NEWLINE_DELIMITED_JSON',
-  uris = ['gs://scope-ws-extract/raw/scope/fields_search/*'],
-  compression = 'GZIP',
-  ignore_unknown_values = true,
-  max_bad_records = 100
-);
+-- ============================================================================
+-- TIER 4: Metadata (Skipped - API returns 403/400)
+-- ============================================================================
 
--- External table for Scope Tags
-CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_tags`
-OPTIONS (
-  format = 'NEWLINE_DELIMITED_JSON',
-  uris = ['gs://scope-ws-extract/raw/scope/tags_search/*'],
-  compression = 'GZIP',
-  ignore_unknown_values = true,
-  max_bad_records = 100
-);
+-- TODO: Uncomment when API access is available
+
+-- -- External table for Scope Field Groups
+-- CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_field_groups`
+-- OPTIONS (
+--   format = 'NEWLINE_DELIMITED_JSON',
+--   uris = ['gs://scope-ws-extract/raw/scope/field-groups_search/*/*.json.gz'],
+--   compression = 'GZIP',
+--   ignore_unknown_values = true,
+--   max_bad_records = 100
+-- );
+
+-- -- External table for Scope Fields
+-- CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_fields`
+-- OPTIONS (
+--   format = 'NEWLINE_DELIMITED_JSON',
+--   uris = ['gs://scope-ws-extract/raw/scope/fields_search/*/*.json.gz'],
+--   compression = 'GZIP',
+--   ignore_unknown_values = true,
+--   max_bad_records = 100
+-- );
+
+-- -- External table for Scope Tags
+-- CREATE OR REPLACE EXTERNAL TABLE `executive_dash_raw.scope_tags`
+-- OPTIONS (
+--   format = 'NEWLINE_DELIMITED_JSON',
+--   uris = ['gs://scope-ws-extract/raw/scope/tags_search/*/*.json.gz'],
+--   compression = 'GZIP',
+--   ignore_unknown_values = true,
+--   max_bad_records = 100
+-- );
