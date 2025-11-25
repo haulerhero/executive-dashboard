@@ -251,9 +251,12 @@ def extract_customer_companies(headers: dict, customer_company_ids: set):
     # Fetch each customer company individually with ALL properties
     for company_id in customer_company_ids:
         url = f"{API_BASE}/crm/v3/objects/companies/{company_id}"
+        params = {"properties": ",".join(COMPANY_PROPERTIES)}
 
         try:
-            data = request_page(url, headers)
+            resp = requests.get(url, headers=headers, params=params, timeout=30)
+            resp.raise_for_status()
+            data = resp.json()
             properties = data.get("properties", {})
 
             # Construct record with metadata
